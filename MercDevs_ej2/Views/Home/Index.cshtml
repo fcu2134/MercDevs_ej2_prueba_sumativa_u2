@@ -1,0 +1,26 @@
+﻿@using System.Security.Claims
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Bienvenido</h1>
+    <p>Requerimientos del laboraroio: Completado</p>
+</div>
+<div>
+  @if (User.Identity!.IsAuthenticated)
+                {
+                    <h6 class="display-6" style="font-size: 27px;">
+                        gusto en verte:
+                        <strong>
+                        
+                            @User.Claims.Where(c => c.Type == ClaimTypes.Email).Select(c => c.Value).SingleOrDefault()
+                        </strong>
+                    </h6>
+                }
+ 
+      <form asp-area="" asp-controller="Home" asp-action="cierre" style="text-align: center; ">
+                    <input type="submit" class="nav-link text-dark boton-salir" value="Salir" />
+      </form>
+</div>
+                
