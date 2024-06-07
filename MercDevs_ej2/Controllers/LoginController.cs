@@ -10,12 +10,13 @@ using System;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 public class LoginController : Controller
-{
+{ // uso el contexto de la base de datos para realizar el login 
     private readonly MercydevsEjercicio2Context _context;
     private readonly IConfiguration _configuration;
     public LoginController(MercydevsEjercicio2Context context, IConfiguration configuration)
     {
         _context = context;
+      //uso la configuracion para guardar la llave de encryptacion 
         _configuration = configuration;
     }
 
@@ -39,7 +40,7 @@ public class LoginController : Controller
 
         return View(login);
     }
-
+//creo el metodo para realizar el login del usuario 
     private async Task<IActionResult> LoginUser(Login login)
     {
         if (ModelState.IsValid)
@@ -52,13 +53,13 @@ public class LoginController : Controller
 
 
                 if (login.Password == decryptedPassword)
-                {
+                {//realizo la auntenticacion del usuario 
                     var claims = new List<Claim>()
                     {
                       
                         new Claim(ClaimTypes.Email, usuarioExistente.Correo)
                     };
-
+       
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                     var authProperties = new AuthenticationProperties();
 
@@ -76,7 +77,7 @@ public class LoginController : Controller
         ViewData["mensaje"] = "Correo o contraseña incorrectos.";
         return View("Index", login);
     }
-
+        //metodo para realizar el registro del usuario y ver si el usuario existe 
     private async Task<IActionResult> RegisterUser(Login login)
     {
         if (ModelState.IsValid)
@@ -91,6 +92,7 @@ public class LoginController : Controller
 
                     string? nombre = string.IsNullOrEmpty(login.Nombre) ? "Nombre" : login.Nombre;
                     string? apellido = string.IsNullOrEmpty(login.Apellido) ? "Apellido" : login.Apellido;
+                    //realizo la creacion de usuario para despues poder subirla ala base de datos 
                     Usuario usuario = new Usuario()
                     {
                         Nombre = nombre,
@@ -123,7 +125,7 @@ public class LoginController : Controller
         return View("Index", login);
     }
 
-    // Método para encriptar texto usando TripleDES
+    // Método para encriptar  los textos  usando TripleDES
     public string EncryptString(string texto)
     {
         string? key = _configuration["EncryptionKey"];
